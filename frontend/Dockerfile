@@ -4,4 +4,6 @@ COPY package.json .
 RUN npm install
 COPY . .
 EXPOSE 3000
-CMD ["npm","run","dev"]
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+CMD ["sh","-c","next dev -H 0.0.0.0 -p 3000"]
