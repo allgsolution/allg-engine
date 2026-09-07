@@ -20,7 +20,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.allg-api.rule=Host(`api.allgbr.com`)"
         - "traefik.http.routers.allg-api.entrypoints=websecure"
-        - "traefik.http.routers.allg-api.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.allg-api.tls.certresolver=cfresolver"
         - "traefik.http.services.allg-api.loadbalancer.server.port=8000"
   frontend:
     build: ./frontend
@@ -36,7 +36,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.allg-front.rule=Host(`app.allgbr.com`)"
         - "traefik.http.routers.allg-front.entrypoints=websecure"
-        - "traefik.http.routers.allg-front.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.allg-front.tls.certresolver=cfresolver"
         - "traefik.http.services.allg-front.loadbalancer.server.port=3000"
 networks:
   allg_network:
