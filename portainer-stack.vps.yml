@@ -1,0 +1,52 @@
+# ALLG Affiliate Engine — Stack para VPS panel.allgbr.com
+# REUSA serviços existentes: postgres, redis, minio, n8n (todos já em allg_network)
+# Deploy: Portainer → Stacks → Add Stack → Paste this file → Env abaixo
+version: "3.8"
+services:
+  api:
+    image: ghcr.io/allg/allg-api:latest
+    # Se usar deploy via Git no Portainer, troque para: build: ./backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:Yuwgodat@postgres:5432/postgres
+      REDIS_URL: redis://redis:6379/1
+      OLLAMA_URL: http://ollama:11434
+      S3_ENDPOINT: http://minio:9000
+      S3_URL: https://s3.allgbr.com
+      JWT_SECRET: ${JWT_SECRET:-change-me-super-secret}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      N8N_URL: https://n8.allgbr.com
+      WEBHOOK_URL: https://webhook.allgbr.com
+    networks:
+      - allg_network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.allg-api.rule=Host(`api.allgbr.com`)"
+        - "traefik.http.routers.allg-api.entrypoints=websecure"
+        - "traefik.http.routers.allg-api.tls.certresolver=letsencrypt"
+        - "traefik.http.services.allg-api.loadbalancer.server.port=8000"
+
+  frontend:
+    image: ghcr.io/allg/allg-frontend:latest
+    environment:
+      NEXT_PUBLIC_API_URL: https://api.allgbr.com
+      NEXT_PUBLIC_N8N_URL: https://n8.allgbr.com
+      NEXT_PUBLIC_S3_URL: https://s3.allgbr.com
+    networks:
+      - allg_network
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.allg-front.rule=Host(`app.allgbr.com`)"
+        - "traefik.http.routers.allg-front.entrypoints=websecure"
+        - "traefik.http.routers.allg-front.tls.certresolver=letsencrypt"
+        - "traefik.http.services.allg-front.loadbalancer.server.port=3000"
+
+networks:
+  allg_network:
+    external: true
+    name: allg_network

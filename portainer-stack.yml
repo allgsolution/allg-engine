@@ -1,0 +1,101 @@
+version: "3.8"
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-allg}
+      POSTGRES_USER: ${POSTGRES_USER:-allg}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-allg123}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - allg_network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - allg_network
+    deploy:
+      replicas: 1
+
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_USER:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-minio12345}
+    volumes:
+      - miniodata:/data
+    networks:
+      - allg_network
+    deploy:
+      replicas: 1
+
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ollamadata:/root/.ollama
+    networks:
+      - allg_network
+    deploy:
+      replicas: 1
+
+  n8n:
+    image: n8nio/n8n
+    environment:
+      N8N_BASIC_AUTH_ACTIVE: "false"
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_DATABASE: ${POSTGRES_DB:-allg}
+      DB_POSTGRESDB_USER: ${POSTGRES_USER:-allg}
+      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD:-allg123}
+    networks:
+      - allg_network
+    deploy:
+      replicas: 1
+
+  api:
+    image: ${REGISTRY:-allg}/allg-api:latest
+    # Para build via Git no Portainer, troque para: build: ./backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-allg}:${POSTGRES_PASSWORD:-allg123}@postgres:5432/${POSTGRES_DB:-allg}
+      REDIS_URL: redis://redis:6379/0
+      OLLAMA_URL: http://ollama:11434
+      S3_ENDPOINT: http://minio:9000
+      JWT_SECRET: ${JWT_SECRET:-change-me}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    networks:
+      - allg_network
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.api.rule=Host(`api.allg.local`)"
+        - "traefik.http.services.api.loadbalancer.server.port=8000"
+
+  frontend:
+    image: ${REGISTRY:-allg}/allg-frontend:latest
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://api:8000}
+    networks:
+      - allg_network
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.front.rule=Host(`allg.local`)"
+        - "traefik.http.services.front.loadbalancer.server.port=3000"
+
+networks:
+  allg_network:
+    external: true
+    name: allg_network
+
+volumes:
+  pgdata:
+  miniodata:
+  ollamadata:
