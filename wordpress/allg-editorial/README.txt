@@ -1,4 +1,4 @@
-ALLG Editorial 1.0.0
+ALLG Editorial 1.1.0
 Licença: GPL-2.0-or-later. Todos os arquivos deste tema são originais.
 
 INSTALAÇÃO
@@ -28,3 +28,8 @@ A referência retornou HTTP 403 durante a criação; fidelidade visual não foi 
 A aparência final depende de conteúdo, imagens, widgets e configurações do WordPress.
 Antes da produção, valide no seu WordPress: instalação/ativação, menus no celular,
 publicação com imagem, busca, categorias, comentários e anúncios.
+
+OTIMIZAÇÃO DE IMAGENS (1.1.0)
+Cards responsivos em 400, 600 e 800 pixels, sizes conforme layout e prioridade
+alta na imagem principal. Instale o plugin separado ALLG WebP para gerar
+miniaturas WebP. Regenere imagens antigas via Ferramentas > ALLG WebP.

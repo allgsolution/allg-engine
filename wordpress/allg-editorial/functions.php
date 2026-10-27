@@ -14,6 +14,8 @@ function allge_setup() {
     add_theme_support('custom-logo', array('height'=>80,'width'=>240,'flex-height'=>true,'flex-width'=>true));
     register_nav_menus(array('primary'=>__('Menu principal','allg-editorial'),'footer'=>__('Menu do rodapé','allg-editorial')));
     add_image_size('allge-card', 800, 500, true);
+    add_image_size('allge-card-small', 400, 250, true);
+    add_image_size('allge-card-mobile', 600, 375, true);
 }
 add_action('after_setup_theme','allge_setup');
 function allge_assets() {
