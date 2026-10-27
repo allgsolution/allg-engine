@@ -1,4 +1,4 @@
-ALLG Editorial 1.1.0
+ALLG Editorial 1.2.0
 Licença: GPL-2.0-or-later. Todos os arquivos deste tema são originais.
 
 INSTALAÇÃO
@@ -33,3 +33,16 @@ OTIMIZAÇÃO DE IMAGENS (1.1.0)
 Cards responsivos em 400, 600 e 800 pixels, sizes conforme layout e prioridade
 alta na imagem principal. Instale o plugin separado ALLG WebP para gerar
 miniaturas WebP. Regenere imagens antigas via Ferramentas > ALLG WebP.
+
+APARÊNCIA E COMPARTILHAMENTO (1.2.0)
+Paleta creme, rosa e vinho; títulos serifados com fontes do sistema e detalhes
+em CSS inspirados em cadernos de receitas. Sem fontes remotas ou imagens decorativas.
+A cor de destaque já personalizada é preservada. Para usar o vinho padrão,
+altere Aparência > Personalizar > ALLG Editorial > Cor de destaque para #8a2143.
+Artigos públicos exibem links de WhatsApp, Facebook, Telegram, X, e-mail e
+Pinterest (quando há imagem destacada). Links funcionam mesmo sem JavaScript.
+Copiar link e compartilhamento nativo aparecem como melhorias progressivas;
+permissão negada na área de transferência oferece seleção manual do link.
+Nenhum SDK, contador ou rastreador de rede social é carregado pelo tema.
+Scripts de compartilhamento são carregados somente em artigos individuais.
+Os compartilhamentos não oferecem publicação automática nas suas contas.
